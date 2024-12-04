@@ -40,20 +40,31 @@ bool analizeReport(intVector report) {
         throw std::invalid_argument("Report must contain at least two numbers.");
     }
 
+    int badLevelCounter = 0;
     int diff = report[1] - report[0];
+    int diffError = 0;
     for(size_t i = 1;i < report.size();i++) {
         if ((diff > 0) != (report[i] > report[i - 1])) {
-            return false;
+            badLevelCounter++;
         }
 
         diff = report[i] - report[i - 1];
 
         if (diff > 3 || diff < -3 || diff == 0) {
-            return false;
+            badLevelCounter++;
         }
-    }
+        
+    };
 
-    return true;
+    for(size_t i = 0; i < report.size(); i++){
+        std::cout << report[i] << " "; 
+    }
+    std::cout << " lvl: " << badLevelCounter << std::endl;
+    if (badLevelCounter > 1) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 intVector stringToIntVector(std::string s) {
