@@ -1,8 +1,14 @@
-advent: 
-	g++ src/advent.cc -std=c++14 -g -Wall -o build/advent
+BUILD_DIR = build
+EXECUTABLE = $(BUILD_DIR)/advent
 
-run:
-	@./build/advent.exe input.txt
+advent: $(BUILD_DIR)
+	g++ src/advent.cc -std=c++14 -g -Wall -o $(EXECUTABLE)
+
+$(BUILD_DIR):
+	@mkdir -p $(BUILD_DIR)
+
+run: advent
+	@$(EXECUTABLE) input.txt
 
 clean:
-	rm build/*.exe
+	rm -f $(BUILD_DIR)/*.exe
