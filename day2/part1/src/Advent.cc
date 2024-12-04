@@ -7,7 +7,7 @@
 typedef std::vector<int> intVector;
 
 int safeReportsCounter(std::string);
-bool analizeReport(intVector);
+bool analyzeReport(intVector);
 intVector stringToIntVector(std::string);
 
 int main(int argc, char const *argv[]) {
@@ -26,7 +26,7 @@ int safeReportsCounter(std::string fileName) {
     int safeReportsCount = 0;
     std::string stringReport = "";
     while (std::getline(file, stringReport)) {
-        if(analizeReport(stringToIntVector(stringReport))) {
+        if(analyzeReport(stringToIntVector(stringReport))) {
             safeReportsCount++;
         }
     }
@@ -35,20 +35,21 @@ int safeReportsCounter(std::string fileName) {
     return safeReportsCount;
 }
 
-bool analizeReport(intVector report) {
+bool analyzeReport(intVector report) {
     if (report.size() < 2) {
         throw std::invalid_argument("Report must contain at least two numbers.");
     }
 
-    int diff = report[1] - report[0];
-    for(size_t i = 1;i < report.size();i++) {
-        if ((diff > 0) != (report[i] > report[i - 1])) {
+    for(size_t i = 1; i < report.size() - 1; i++) {
+        if ((report[i-1] > report[i]) != (report[i] > report[i + 1])) {
             return false;
         }
 
-        diff = report[i] - report[i - 1];
+        if (std::abs(report[i-1] - report[i]) > 3 || std::abs(report[i] - report[i+1]) > 3) {
+            return false;
+        }
 
-        if (diff > 3 || diff < -3 || diff == 0) {
+        if (report[i-1] - report[i] == 0 || report[i] - report[i+1] == 0) {
             return false;
         }
     }

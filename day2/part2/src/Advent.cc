@@ -7,7 +7,10 @@
 typedef std::vector<int> intVector;
 
 int safeReportsCounter(std::string);
-bool analizeReport(intVector);
+bool analyzeWithRelativePosition(const intVector&, size_t, int);
+bool analyzeWithDampener(const intVector&, size_t);
+bool analyzeReport(const intVector&, bool);
+bool checkDampener(const intVector&, size_t, bool);
 intVector stringToIntVector(std::string);
 
 int main(int argc, char const *argv[]) {
@@ -26,7 +29,7 @@ int safeReportsCounter(std::string fileName) {
     int safeReportsCount = 0;
     std::string stringReport = "";
     while (std::getline(file, stringReport)) {
-        if(analizeReport(stringToIntVector(stringReport))) {
+        if(analyzeReport(stringToIntVector(stringReport), false)) {
             safeReportsCount++;
         }
     }
@@ -35,35 +38,46 @@ int safeReportsCounter(std::string fileName) {
     return safeReportsCount;
 }
 
-bool analizeReport(intVector report) {
+bool analyzeWithRelativePosition(const intVector& report, size_t i, int relativePosition) {
+    intVector newReport = report;
+    newReport.erase(newReport.begin() + i + relativePosition);
+
+    return analyzeReport(newReport, true);
+}
+
+bool analyzeWithDampener(const intVector& report, size_t i) {
+    return analyzeWithRelativePosition(report, i, -1) || 
+            analyzeWithRelativePosition(report, i, 0) || 
+            analyzeWithRelativePosition(report, i, +1);
+}
+
+bool analyzeReport(const intVector& report, bool dampener) {
     if (report.size() < 2) {
         throw std::invalid_argument("Report must contain at least two numbers.");
     }
 
-    int badLevelCounter = 0;
-    int diff = report[1] - report[0];
-    int diffError = 0;
-    for(size_t i = 1;i < report.size();i++) {
-        if ((diff > 0) != (report[i] > report[i - 1])) {
-            badLevelCounter++;
+    for(size_t i = 1; i < report.size() - 1; i++) {
+        if ((report[i-1] > report[i]) != (report[i] > report[i + 1])) {
+            return checkDampener(report, i, dampener);
         }
 
-        diff = report[i] - report[i - 1];
-
-        if (diff > 3 || diff < -3 || diff == 0) {
-            badLevelCounter++;
+        if (std::abs(report[i-1] - report[i]) > 3 || std::abs(report[i] - report[i+1]) > 3) {
+            return checkDampener(report, i, dampener);
         }
-        
+
+        if (report[i-1] - report[i] == 0 || report[i] - report[i+1] == 0) {
+            return checkDampener(report, i, dampener);
+        }
     };
 
-    for(size_t i = 0; i < report.size(); i++){
-        std::cout << report[i] << " "; 
-    }
-    std::cout << " lvl: " << badLevelCounter << std::endl;
-    if (badLevelCounter > 1) {
-        return false;
+    return true;
+}
+
+bool checkDampener(const intVector& report, size_t i, bool dampener) {
+    if(!dampener) {
+        return analyzeWithDampener(report, i);
     } else {
-        return true;
+        return false;
     }
 }
 
