@@ -12,8 +12,8 @@ int addNumbers(pairIntVector numberLists);
 
 int main(int argc, char const *argv[]) {
 
-    pairIntVector sortedNumberLists = readSortedDistances(argv[1]);
-    int totalDistance = addNumbers(sortedNumberLists);
+    pairIntVector sortedDistanceLists = readSortedDistances(argv[1]);
+    int totalDistance = addNumbers(sortedDistanceLists);
 
     std::cout << "The total distance is " << totalDistance;
 
