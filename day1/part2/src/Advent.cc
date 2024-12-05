@@ -13,7 +13,6 @@ int addDistanceDifference(pairIntVector distanceLists);
 int addDistanceRepetitions(pairIntVector distanceLists);
 
 int main(int argc, char const *argv[]) {
-
     pairIntVector sortedDistanceLists = readSortedDistances(argv[1]);
     std::cout << "The total distance difference is " << addDistanceDifference(sortedDistanceLists) << std::endl;
     std::cout << "The similarity score is " << addDistanceRepetitions(sortedDistanceLists);

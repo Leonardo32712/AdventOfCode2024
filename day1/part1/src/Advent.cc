@@ -11,7 +11,6 @@ void insertDistanceSorting(intVector &vector, int distance);
 int addDistanceDifference(pairIntVector distanceLists);
 
 int main(int argc, char const *argv[]) {
-
     pairIntVector sortedDistanceLists = readSortedDistances(argv[1]);
     std::cout << "The total distance difference is " << addDistanceDifference(sortedDistanceLists);
 
