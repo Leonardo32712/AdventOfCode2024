@@ -7,11 +7,11 @@
 typedef std::vector<int> intVector;
 
 int safeReportsCounter(std::string);
-bool analyzeWithRelativePosition(const intVector&, size_t, int);
-bool analyzeWithDampener(const intVector&, size_t);
+intVector stringToIntVector(std::string);
 bool analyzeReport(const intVector&, bool);
 bool checkDampener(const intVector&, size_t, bool);
-intVector stringToIntVector(std::string);
+bool analyzeWithDampener(const intVector&, size_t);
+bool analyzeWithRelativePosition(const intVector&, size_t, int);
 
 int main(int argc, char const *argv[]) {
 
@@ -38,17 +38,16 @@ int safeReportsCounter(std::string fileName) {
     return safeReportsCount;
 }
 
-bool analyzeWithRelativePosition(const intVector& report, size_t i, int relativePosition) {
-    intVector newReport = report;
-    newReport.erase(newReport.begin() + i + relativePosition);
+intVector stringToIntVector(std::string s) {
+    std::stringstream ss(s);
+    intVector numbers;
 
-    return analyzeReport(newReport, true);
-}
+    int number = 0;
+    while (ss >> number) { 
+        numbers.push_back(number);
+    }
 
-bool analyzeWithDampener(const intVector& report, size_t i) {
-    return analyzeWithRelativePosition(report, i, -1) || 
-            analyzeWithRelativePosition(report, i, 0) || 
-            analyzeWithRelativePosition(report, i, +1);
+    return numbers;
 }
 
 bool analyzeReport(const intVector& report, bool dampener) {
@@ -81,14 +80,15 @@ bool checkDampener(const intVector& report, size_t i, bool dampener) {
     }
 }
 
-intVector stringToIntVector(std::string s) {
-    std::stringstream ss(s);
-    intVector numbers;
+bool analyzeWithDampener(const intVector& report, size_t i) {
+    return analyzeWithRelativePosition(report, i, -1) || 
+            analyzeWithRelativePosition(report, i, 0) || 
+            analyzeWithRelativePosition(report, i, +1);
+}
 
-    int number = 0;
-    while (ss >> number) { 
-        numbers.push_back(number);
-    }
+bool analyzeWithRelativePosition(const intVector& report, size_t i, int relativePosition) {
+    intVector newReport = report;
+    newReport.erase(newReport.begin() + i + relativePosition);
 
-    return numbers;
+    return analyzeReport(newReport, true);
 }
