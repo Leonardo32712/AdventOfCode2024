@@ -12,13 +12,18 @@ class CityMap {
         stringVector map;
         antennaVector antennas;
         std::set<char> frequencies;
+        CoordenadeVector antinodesCoordenades;
 
         void analyzeMap();
-        void saveAntenna(const char, const intPair);
+        void saveAntenna(const char, const Coordenade);
+        bool checkAntinode(const Coordenade);
+        bool antinodeRegistered(const Coordenade);
+        bool outOfMap(const Coordenade);
     public:
         CityMap(stringVector);
         ~CityMap();
 
+        int markAntinodes();
         void printCity();
         void printCityData();
 };
