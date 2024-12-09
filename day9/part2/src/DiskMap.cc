@@ -23,41 +23,32 @@ void DiskMap::unzipDisk() {
 }
 
 void DiskMap::moveFiles() {
-    int number = -1;
+    int number = disk[disk.size() - 1];
     int space = 0;
-    
+
     for (int i = disk.size() - 1; i >= 0; i--) {
-        if(disk[i] == -1) {
-            if(space == 0) {
-                number = disk[i];
-            } else {
-                if(firstFreeSpot(i + 1, space) != disk.size()) {
-                    int freeSpot = firstFreeSpot(i + 1, space);
-                    for(int j = 0; j < space; j++) {
-                        std::swap(disk[freeSpot + j], disk[i + j + 1]);
-                    }
-                }
-                number = disk[i];
-                space = 1;
+        if(number != -1) {
+            if(disk[i] != number) {
+                moveFileBlock(i,space);
             }
-        } else {
-            if(space == 0) {
+
+            if(disk[i] == number) {
                 space++;
-                number = disk[i];
-            } else if(disk[i] == number) {
-                space++;
-            } else {
-                if(firstFreeSpot(i + 1, space) != disk.size()) {
-                    int freeSpot = firstFreeSpot(i + 1, space);
-                    for(int j = 0; j < space; j++) {
-                        std::swap(disk[freeSpot + j], disk[i + j + 1]);
-                    }
-                }
-                number = disk[i];
-                space = 1;
             }
         }
+
+        number = disk[i];
     }
+}
+
+void DiskMap::moveFileBlock(const int i, int& space) {
+    if(firstFreeSpot(i + 1, space) != disk.size()) {
+        int freeSpot = firstFreeSpot(i + 1, space);
+        for(int j = 0; j < space; j++) {
+            std::swap(disk[freeSpot + j], disk[i + j + 1]);
+        }
+    }
+    space = 1;
 }
 
 long long DiskMap::getChecksum() {

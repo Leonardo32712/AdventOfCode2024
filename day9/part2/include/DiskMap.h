@@ -10,6 +10,7 @@ class DiskMap {
 
         void unzipDisk();
         void moveFiles();
+        void moveFileBlock(const int, int&);
         size_t firstFreeSpot(int, int);
     public:
         DiskMap(intVector);
