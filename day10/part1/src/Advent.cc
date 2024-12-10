@@ -3,9 +3,9 @@
 int main(int argc, char const *argv[]) {
 
     fileReader fr(argv[1]);
-    TopographicMap dm (fr.readTopographicMap());
+    TopographicMap tm (fr.readTopographicMap());
 
-    std::cout << "Checksum: " << std::endl;
+    std::cout << "ScoreSum: " << tm.getScoreSum() << std::endl;
     return 0;
 }
 
