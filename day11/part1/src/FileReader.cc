@@ -14,7 +14,7 @@ fileReader::~fileReader() {
 
 StoneArrange fileReader::readStoneArrange() {
     std::string line;
-    intVector stones({});
+    longVector stones;
 
     while (std::getline(this->file, line)) {
         line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
@@ -23,7 +23,7 @@ StoneArrange fileReader::readStoneArrange() {
             std::string number;
             try {
                 while (std::getline(ss, number, ' ')) {
-                    stones.push_back(std::stoi(number));
+                    stones.push_back(std::stol(number));
                 }
             } catch (const std::exception& e) {
                 std::cerr << "Error parsing stone: " << line << " (" << e.what() << ")" << std::endl;
