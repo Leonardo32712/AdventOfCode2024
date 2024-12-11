@@ -1,21 +1,11 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <cmath>
+#include <map>
 
 typedef long long long2;
-
-struct Solution {
-    long2 stone;
-    int blinks;
-    long2 result;
-};
-
-typedef long long long2;
+typedef std::pair<long2, int> keyLongInt;
 
 class Solutions {
     private:
-        std::vector<Solution> solutions;
+        std::map<keyLongInt, long2> solutions;
 
     public:
         Solutions();
