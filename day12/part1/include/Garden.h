@@ -3,15 +3,19 @@
 #include <string>
 
 typedef std::vector<std::string> stringVector;
+typedef std::pair<int,int> areaPerimeter;
 
 class Garden {
     private:
         stringVector gardenMap;
 
-        bool outOfBounds(size_t, size_t);
+        void exploreRegion(int, int, char, areaPerimeter&);
+        void checkPlot(int, int, char, areaPerimeter&);
+        bool outOfBounds(int, int);
     public:
         Garden(stringVector);
         ~Garden();
 
+        int totalPrice();
         void printGarden();
 };
