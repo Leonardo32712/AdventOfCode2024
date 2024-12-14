@@ -5,12 +5,12 @@ int main(int argc, char const *argv[]) {
     fileReader fr(argv[1]);
     std::vector<ClawMachine> clawMachines (fr.readClawMachines());
 
+    int fewestPrice = 0;
     for( ClawMachine cm : clawMachines) {
-        cm.printClawMachine();
-        std::cout << std::endl;
+        fewestPrice += cm.calculateMinimumTokenPrice();
     }
+    std::cout << "BetterPrize: " << fewestPrice << std::endl << std::endl;
 
-    //std::cout << "Total price: " << g.totalPrice() << std::endl;
     return 0;
 }
 
