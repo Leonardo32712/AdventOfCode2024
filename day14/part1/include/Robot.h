@@ -1,21 +1,20 @@
 #include <vector>
 #include <iostream>
-#include <string>
-#include <cmath>
+
 
 typedef std::pair<int,int> intPair;
-typedef std::pair<float,float> floatPair;
 
 class Robot {
     private:
-        const intPair position;
         const intPair velocity;
+        intPair position;
 
-        floatPair calculateButtonTimesPressed();
     public:
         Robot(intPair, intPair);
         ~Robot();
 
-        int calculateMinimumTokenPrice();
+        intPair getVelocity();
+        intPair getPosition();
+        void setPosition(int, int);
         void printRobot();
 };

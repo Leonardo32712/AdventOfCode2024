@@ -12,17 +12,17 @@ fileReader::~fileReader() {
     this->file.close();
 }
 
-std::vector<Robot> fileReader::readRobots() {
+RobotSimulator fileReader::readRobots() {
     std::string line;
-    std::vector<Robot> Robots;
+    std::vector<Robot> robots;
 
     while (std::getline(this->file, line)) {
         line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
 
         intPair p, v;
         sscanf(line.c_str(), "p=%d,%d v=%d,%d", &p.first, &p.second, &v.first, &v.second);
-        Robots.emplace_back(p,v);
+        robots.emplace_back(p,v);
     }
 
-    return Robots;
+    return RobotSimulator(robots);
 }
