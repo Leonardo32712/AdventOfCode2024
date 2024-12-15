@@ -2,7 +2,7 @@
 #include <fstream>
 #include <algorithm>
 
-#include "RobotSimulator.h"
+#include "Warehouse.h"
 
 class fileReader {
 private:
@@ -12,5 +12,5 @@ public:
     fileReader(std::string);
     ~fileReader();
 
-    RobotSimulator readRobots();
+    Warehouse readRobots();
 };

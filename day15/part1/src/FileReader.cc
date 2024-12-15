@@ -12,17 +12,42 @@ fileReader::~fileReader() {
     this->file.close();
 }
 
-RobotSimulator fileReader::readRobots() {
+Warehouse fileReader::readRobots() {
+    std::vector<std::string> warehouseMap;
+    std::vector<Direction> robotMoveProgram;
     std::string line;
-    std::vector<Robot> robots;
-
+    bool readingMap = true;
+    
     while (std::getline(this->file, line)) {
         line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
 
-        intPair p, v;
-        sscanf(line.c_str(), "p=%d,%d v=%d,%d", &p.first, &p.second, &v.first, &v.second);
-        robots.emplace_back(p,v);
+        if(line == "") {
+            readingMap = false;
+        }
+
+        if(readingMap) {
+            warehouseMap.push_back(line);
+        } else {
+            for(char d : line) {
+                switch (d) {
+                    case '^':
+                        robotMoveProgram.push_back(UP);
+                        break;
+                    case '>':
+                        robotMoveProgram.push_back(RIGHT);
+                        break;
+                    case 'v':
+                        robotMoveProgram.push_back(DOWN);
+                        break;
+                    case '<':
+                        robotMoveProgram.push_back(LEFT);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 
-    return RobotSimulator(robots);
+    return Warehouse(warehouseMap, robotMoveProgram);
 }

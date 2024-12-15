@@ -3,9 +3,11 @@
 int main(int argc, char const *argv[]) {
 
     fileReader fr(argv[1]);
-    RobotSimulator Robots (fr.readRobots());
+    Warehouse wh (fr.readRobots());
 
-    std::cout << std::endl;
+    wh.printWarehouse();
+
+    std::cout << wh.getSumGPS() << std::endl;
 
     return 0;
 }
