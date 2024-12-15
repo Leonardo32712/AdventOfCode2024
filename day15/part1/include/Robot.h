@@ -13,13 +13,17 @@ enum Direction {
 
 class Robot {
     private:
+        intPair position;
         std::vector<Direction> moveProgram;
         size_t moveIteration;
 
     public:
-        Robot(std::vector<Direction>);
+        Robot(std::vector<Direction>, intPair);
         ~Robot();
 
-        Direction move();
+        Direction nextMove();
+        void setPosition(intPair);
+        intPair getPosition();
+        void resetProgram();
         void printRobotProgram();
 };

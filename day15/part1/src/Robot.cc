@@ -1,10 +1,13 @@
 #include "../include/Robot.h"
 
-Robot::Robot(std::vector<Direction> program) : moveProgram(program), moveIteration(0) {}
+Robot::Robot(std::vector<Direction> program, intPair pos) : moveProgram(program) {
+    position = pos;
+    moveIteration = 0;
+}
 
 Robot::~Robot() {}
 
-Direction Robot::move() {
+Direction Robot::nextMove() {
     if(moveIteration < moveProgram.size()) {
         Direction d = moveProgram[moveIteration];
         moveIteration++;
@@ -12,6 +15,18 @@ Direction Robot::move() {
     } else {
         return NONE;
     }
+}
+
+void Robot::setPosition(intPair pos) {
+    position = pos;
+}
+
+intPair Robot::getPosition() {
+    return position;
+}
+
+void Robot::resetProgram() {
+    moveIteration = 0;
 }
 
 void Robot::printRobotProgram() {
