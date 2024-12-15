@@ -1,6 +1,8 @@
 #include <vector>
 #include <iostream>
 
+const int WIDE = 101;
+const int TALL = 103;
 
 typedef std::pair<int,int> intPair;
 
@@ -8,6 +10,7 @@ class Robot {
     private:
         const intPair velocity;
         intPair position;
+        
 
     public:
         Robot(intPair, intPair);
@@ -15,6 +18,7 @@ class Robot {
 
         intPair getVelocity();
         intPair getPosition();
-        void setPosition(int, int);
+        void move();
+        int getQuadrant();
         void printRobot();
 };
