@@ -11,12 +11,8 @@ int Garden::totalPrice() {
         for(int j = 0; j < static_cast<int>(gardenMap[i].size()); j++) {
             if(std::isupper(gardenMap[i][j])) {
                 intPair areaPerimeter(0,0);
-                areaPerimeter.first = exploreRegion(i, j, gardenMap[i][j]);
-                areaPerimeter.second = calculatePerimeter();
-
-                std::cout << "RESULT (" << char(toupper(gardenMap[i][j])) << ") " << (areaPerimeter.first) << " " << (areaPerimeter.second) << std::endl;
+                areaPerimeter = exploreRegion(i, j, gardenMap[i][j]);
                 totalPrice += (areaPerimeter.first)*(areaPerimeter.second);
-                perimeterCoords.clear();
             }
         }
     }
@@ -26,81 +22,73 @@ int Garden::totalPrice() {
     return totalPrice;
 }
 
-int Garden::calculatePerimeter() {
-    int perimeter = 2;
-    int growth[] = {0, 0, 0, 0}; // down, right, up, left
-
-    int x = -1;
-    int y = -1;
-    for (const auto& coord : perimeterCoords) {
-        if(x != -1 && y != -1) {
-            if(coord.first - x > 0) {
-                growth[0] = coord.first - x;
-            }
-
-            if(coord.second - y > 0) {
-                growth[1] = coord.second - y;
-            }
-
-            if(coord.first - x < 0) {
-                growth[2] = coord.first - x;
-            }
-
-            if(coord.second - y < 0) {
-                growth[3] = coord.second - y;
-            }
-        }
-
-        x = coord.first;
-        y = coord.second;
-        std::cout << "(" << coord.first << "," << coord.second << ") ";
-        std::cout << growth[0] << " " << growth[1] << " " << growth[2] << " " << growth[3] << std::endl;
-    }
-
-    return perimeter;
-}
-
-int Garden::exploreRegion(const int i, const int j, const char plant) {
+intPair Garden::exploreRegion(const int i, const int j, const char plant) {
     gardenMap[i][j] = char(tolower(gardenMap[i][j]));
-    int area = 1;
+    intPair ap(1,0);
+    
+    ap.second = checkCorners(i, j, plant);
     
     if(checkPlot(i + 1, j, plant)) {    // GO DOWN
         if(!islower(gardenMap[i + 1][j])) {
-            area += exploreRegion(i + 1, j, plant);
+            intPair result = exploreRegion(i + 1, j, plant);
+            ap.first += result.first;
+            ap.second += result.second;
         }
-    } else {
-        perimeterCoords.emplace(intPair(i,j));
-        //std::cout << plant << " (" << i + 1 << "," << j + 1 << "): DOWN" << std::endl;
     }
 
     if(checkPlot(i, j + 1, plant)) {    // GO RIGHT
         if(!islower(gardenMap[i][j + 1])) {
-            area += exploreRegion(i, j + 1, plant);
+            intPair result = exploreRegion(i, j + 1, plant);
+            ap.first += result.first;
+            ap.second += result.second;
         }
-    } else {
-        perimeterCoords.emplace(intPair(i,j));
-        //std::cout << plant << " (" << i + 1 << "," << j + 1 << "): RIGHT" << std::endl;
     }
 
     if(checkPlot(i - 1, j, plant)) {    // GO UP
         if(!islower(gardenMap[i - 1][j])) {
-            area += exploreRegion(i - 1, j, plant);
+            intPair result = exploreRegion(i - 1, j, plant);
+            ap.first += result.first;
+            ap.second += result.second;
         }
-    } else {
-        perimeterCoords.emplace(intPair(i,j));
-        //std::cout << plant << " (" << i + 1 << "," << j + 1 << "): UP" << std::endl;
     }
 
     if(checkPlot(i, j - 1, plant)) {    // GO LEFT
         if(!islower(gardenMap[i][j - 1])) {
-            area += exploreRegion(i, j - 1, plant);
+            intPair result = exploreRegion(i, j - 1, plant);
+            ap.first += result.first;
+            ap.second += result.second;
         }
-    } else {
-        perimeterCoords.emplace(intPair(i,j));
-        //std::cout << plant << " (" << i + 1 << "," << j + 1 << "): LEFT" << std::endl;
     }
 
-    return area;
+    return ap;
+}
+
+int Garden::checkCorners(const int i, const int j, const char plant) {
+    int perimeter = 0;
+
+    checkCorner(intPair(i,j),intPair(1,1), plant) ? perimeter++ : true;
+    checkCorner(intPair(i,j),intPair(1,-1), plant) ? perimeter++ : true;
+    checkCorner(intPair(i,j),intPair(-1,1), plant) ? perimeter++ : true;
+    checkCorner(intPair(i,j),intPair(-1,-1), plant) ? perimeter++ : true;
+
+    return perimeter;
+}
+
+bool Garden::checkCorner(const intPair pos, const intPair cor, const char plant) {
+    bool thereIsCorner = false;
+    
+    if(!checkPlot(pos.first + cor.first, pos.second, plant) && 
+       !checkPlot(pos.first, pos.second + cor.second, plant)) {
+        thereIsCorner = true;
+    }
+    
+    if(checkPlot(pos.first + cor.first, pos.second, plant) && 
+       checkPlot(pos.first, pos.second + cor.second, plant) && 
+       !checkPlot(pos.first + cor.first, pos.second + cor.second, plant)) {
+        thereIsCorner = true;
+    }
+
+    return thereIsCorner;
 }
 
 bool Garden::checkPlot(int i, int j, char plant) {
@@ -117,6 +105,6 @@ bool Garden::outOfBounds(int i, int j) {
 
 void Garden::printGarden() {
     for(int i = 0; i < static_cast<int>(gardenMap.size()); i ++) {
-        // std::cout << gardenMap[i] << std::endl;
+        std::cout << gardenMap[i] << std::endl;
     }
 }
