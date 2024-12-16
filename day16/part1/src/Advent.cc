@@ -6,8 +6,8 @@ int main(int argc, char const *argv[]) {
     Maze maze (fr.readMaze());
 
     maze.printMaze();
-    //std::cout << wh.getSumGPS() << std::endl;
-
+    std::cout << maze.getLowestScore() << std::endl;
+    maze.printMaze();
     return 0;
 }
 
