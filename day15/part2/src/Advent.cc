@@ -8,9 +8,8 @@ int main(int argc, char const *argv[]) {
     wh.printWarehouse();
     wh.doubleWide();
     wh.printWarehouse();
-
-    //std::cout << wh.getSumGPS() << std::endl;
-
+    wh.simulateMove();
+    wh.printWarehouse();
+    std::cout << "Summary GPS: " << wh.getSumGPS() << std::endl;
     return 0;
 }
-

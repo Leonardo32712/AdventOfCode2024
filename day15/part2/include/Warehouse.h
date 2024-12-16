@@ -6,15 +6,16 @@ class Warehouse {
         Robot robot;
 
         intPair findRobot();
-        void simulateMove();
         bool checkMove(intPair, Direction);
-        bool moveBox(intPair, intPair, Direction);
+        bool checkMoveBox(intPair, intPair, Direction, bool);
         intPair getNextStep(intPair, Direction);
+        void saveBoxMove(intPair, intPair, intPair, intPair, Direction);
         bool outOfBounds(intPair);
     public:
         Warehouse(std::vector<std::string>, std::vector<Direction>);
         ~Warehouse();
 
+        void simulateMove();
         void doubleWide();
         long getSumGPS();
         void printWarehouse();
