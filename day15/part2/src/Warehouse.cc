@@ -60,8 +60,6 @@ void Warehouse::simulateMove() {
             robot.setPosition(robotPos);
             wareHouseMap[robotPos.first][robotPos.second] = '@';
         }
-        system("clear");
-        printWarehouse();
     } while(robotMovement != NONE);
 }
 
@@ -86,29 +84,28 @@ bool Warehouse::checkMove(intPair pos, Direction d) {
     if(wareHouseMap[nextPos.first][nextPos.second] == '.') {
         return true;
     } else if (wareHouseMap[nextPos.first][nextPos.second] == ']' && (d == UP || d == DOWN)) {
-        if(checkMoveBox(intPair(nextPos.first, nextPos.second - 1), nextPos, d, false)) {
-            return checkMoveBox(intPair(nextPos.first, nextPos.second - 1), nextPos, d, true);
+        if(checkMoveBox(intPair(nextPos.first, nextPos.second - 1), d, false)) {
+            return checkMoveBox(intPair(nextPos.first, nextPos.second - 1), d, true);
         }
     } else if (wareHouseMap[nextPos.first][nextPos.second] == '[' && (d == UP || d == DOWN)) {
-        if(checkMoveBox(nextPos, intPair(nextPos.first, nextPos.second + 1), d, false)) {
-            return checkMoveBox(nextPos, intPair(nextPos.first, nextPos.second + 1), d, true);
+        if(checkMoveBox(nextPos, d, false)) {
+            return checkMoveBox(nextPos, d, true);
         }
-
     } else if (wareHouseMap[nextPos.first][nextPos.second] == ']' && d == LEFT) {
-        if(checkMoveBox(intPair(nextPos.first, nextPos.second - 1), nextPos, d, false)) {
-            return checkMoveBox(intPair(nextPos.first, nextPos.second - 1), nextPos, d, true);
+        if(checkMoveBox(intPair(nextPos.first, nextPos.second - 1), d, false)) {
+            return checkMoveBox(intPair(nextPos.first, nextPos.second - 1), d, true);
         }
-
     } else if ( wareHouseMap[nextPos.first][nextPos.second] == '[' && d == RIGHT) {
-        if(checkMoveBox(nextPos, intPair(nextPos.first, nextPos.second + 1), d, false)) {
-            return checkMoveBox(nextPos, intPair(nextPos.first, nextPos.second + 1), d, true);
+        if(checkMoveBox(nextPos, d, false)) {
+            return checkMoveBox(nextPos, d, true);
         }
     }
         
     return false;
 }
 
-bool Warehouse::checkMoveBox(intPair pos1, intPair pos2, Direction d, bool save) {
+bool Warehouse::checkMoveBox(intPair pos1, Direction d, bool save) {
+    intPair pos2 (pos1.first,pos1.second+1);
     intPair nextPos1 = getNextStep(pos1, d);
     intPair nextPos2 = getNextStep(pos2, d);
 
@@ -119,52 +116,77 @@ bool Warehouse::checkMoveBox(intPair pos1, intPair pos2, Direction d, bool save)
         return false;
     }
 
-    if( (wareHouseMap[nextPos1.first][nextPos1.second] == '.' && d == LEFT) ||
-        (wareHouseMap[nextPos2.first][nextPos2.second] == '.' && d == RIGHT) || 
-        (wareHouseMap[nextPos1.first][nextPos1.second] == '.' && 
-         wareHouseMap[nextPos2.first][nextPos2.second] == '.')) { 
-        if(save) { saveBoxMove(nextPos1, nextPos2, pos1, pos2, d); }         
+    if(checkFreeMoveBox(nextPos1, d) ) { 
+        if(save) { saveBoxMove(nextPos1, pos1, d); }         
         return true;
     } else if (wareHouseMap[nextPos1.first][nextPos1.second] == '[' && (d == UP || d == DOWN)) {
-        if(checkMoveBox(nextPos1, nextPos2, d, save)) {
-            if(save) { saveBoxMove(nextPos1, nextPos2, pos1, pos2, d); } 
-            return true;
-        } else {
-            return false;
-        }
+        return checkVerticalMoveBox(nextPos1, pos1, d, save);
     } else if (wareHouseMap[nextPos1.first][nextPos1.second] == ']' && d == LEFT) {
-        if(checkMoveBox(intPair(nextPos1.first, nextPos1.second - 1), nextPos1, d, save)) {
-            if(save) { saveBoxMove(nextPos1, nextPos2, pos1, pos2, d); } 
-            return true;
-        } else {
-            return false;
-        }
+        return checkLeftMoveBox(nextPos1, pos1, d, save);
     } else if ( wareHouseMap[nextPos2.first][nextPos2.second] == '[' && d == RIGHT) {
-        if(checkMoveBox(nextPos2, intPair(nextPos2.first, nextPos2.second + 1), d, save)) {
-            if(save) { saveBoxMove(nextPos1, nextPos2, pos1, pos2, d); } 
-            return true;
-        } else {
-            return false;
-        }
+        return checkRightMoveBox(nextPos1, pos1, d, save);
     }
     
+    return checkMultiVerticalMoveBox(nextPos1, pos1, d, save);
+}
+
+bool Warehouse::checkFreeMoveBox(intPair nextPos1, Direction d) {
+    intPair nextPos2(nextPos1.first, nextPos1.second+1);
+    return  (wareHouseMap[nextPos1.first][nextPos1.second] == '.' && d == LEFT) ||
+            (wareHouseMap[nextPos2.first][nextPos2.second] == '.' && d == RIGHT) || 
+            (wareHouseMap[nextPos1.first][nextPos1.second] == '.' && 
+            wareHouseMap[nextPos2.first][nextPos2.second] == '.');
+}
+
+bool Warehouse::checkVerticalMoveBox(intPair nextPos1, intPair pos1, Direction d, bool save) {
+    if(checkMoveBox(nextPos1, d, save)) {
+        if(save) { saveBoxMove(nextPos1, pos1, d); } 
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool Warehouse::checkLeftMoveBox(intPair nextPos1, intPair pos1, Direction d, bool save) {
+    if(checkMoveBox(intPair(nextPos1.first, nextPos1.second - 1), d, save)) {
+        if(save) { saveBoxMove(nextPos1, pos1, d); } 
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool Warehouse::checkRightMoveBox(intPair nextPos1, intPair pos1, Direction d, bool save) {
+    if(checkMoveBox(intPair(nextPos1.first, nextPos1.second+1), d, save)) {
+        if(save) { saveBoxMove(nextPos1, pos1, d); } 
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool Warehouse::checkMultiVerticalMoveBox(intPair nextPos1, intPair pos1, Direction d, bool save) {
     if (wareHouseMap[nextPos1.first][nextPos1.second] == ']' && (d == UP || d == DOWN)) {
-        if(!checkMoveBox(intPair(nextPos1.first, nextPos1.second - 1), nextPos1, d, save)) {
+        if(!checkMoveBox(intPair(nextPos1.first, nextPos1.second - 1), d, save)) {
             return false;
         }
     }
 
+    intPair nextPos2(nextPos1.first, nextPos1.second+1);
+
     if (wareHouseMap[nextPos2.first][nextPos2.second] == '[' && (d == UP || d == DOWN)) {
-        if(!checkMoveBox(nextPos2, intPair(nextPos2.first, nextPos2.second + 1), d, save)) {
+        if(!checkMoveBox(nextPos2, d, save)) {
             return false;
         }
     }
     
-    if(save) { saveBoxMove(nextPos1, nextPos2, pos1, pos2, d); } 
+    if(save) { saveBoxMove(nextPos1, pos1, d); } 
     return true;
 }
 
-void Warehouse::saveBoxMove(intPair nextPos1, intPair nextPos2, intPair pos1, intPair pos2, Direction d) {
+void Warehouse::saveBoxMove(intPair nextPos1, intPair pos1, Direction d) {
+    intPair nextPos2(nextPos1.first, nextPos1.second+1);
+    intPair pos2(pos1.first, pos1.second+1);
     switch (d) {
         case LEFT:
             wareHouseMap[nextPos1.first][nextPos1.second] = '[';
@@ -214,6 +236,4 @@ void Warehouse::printWarehouse() {
     }
 
     std::cout << std::endl;
-
-    //robot.printRobotProgram();
 }
