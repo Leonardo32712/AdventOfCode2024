@@ -1,20 +1,37 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
 
-typedef std::vector<int> intVector;
+typedef std::vector<long> longVector;
 
+enum OpCode {
+    ADV = 0,
+    BXL = 1,
+    BST = 2,
+    JNZ = 3,
+    BXC = 4,
+    OUT = 5,
+    BDV = 6,
+    CDV = 7
+};
 
 class Computer {
     private:
-        intVector registers;
-        const intVector program;
+        longVector registers;
+        const longVector program;
+        longVector output;
+        int IP;
+        bool jumped;
 
+        void operate(int, long);
+        long getComboOP(long);
     public:
-        Computer(intVector, intVector);
+        Computer(longVector, longVector);
         ~Computer();
 
-        //intVector getProgramResult();
+        longVector getProgramResult();
         void printPC();
         void printRegisters();
         void printProgram();
+        void printOutput();
 };

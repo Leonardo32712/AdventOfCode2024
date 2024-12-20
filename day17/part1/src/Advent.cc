@@ -6,7 +6,9 @@ int main(int argc, char const *argv[]) {
     Computer pc (fr.readPC());
 
     pc.printPC();
-    //std::cout <<  << std::endl;
+    pc.getProgramResult();
+    std::cout << std::endl << "Program result: ";
+    pc.printOutput();
 
     return 0;
 }

@@ -13,8 +13,8 @@ fileReader::~fileReader() {
 }
 
 Computer fileReader::readPC() {
-    std::vector<int> registers;
-    std::vector<int> program;
+    longVector registers;
+    longVector program;
     std::string line;
     bool readingRegisters = true;
     
