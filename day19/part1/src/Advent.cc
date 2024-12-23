@@ -5,8 +5,7 @@ int main(int argc, char const *argv[]) {
     fileReader fr(argv[1]);
     Onsen o (fr.readOnsen());
 
-    o.printOnsen();
-    //std::cout << "Minimum number of steps: " << pc.simulate(1024);
+    std::cout << "Possible desings: " << o.possibleDesigns();
 
     return 0;
 }

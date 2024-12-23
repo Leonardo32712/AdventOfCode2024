@@ -13,7 +13,7 @@ fileReader::~fileReader() {
 }
 
 Onsen fileReader::readOnsen() {
-    stringVector patterns;
+    stringSet patterns;
     stringVector desings;
     std::string line;
     bool readingPatterns = true;
@@ -25,11 +25,16 @@ Onsen fileReader::readOnsen() {
             readingPatterns = false;
         } else if (readingPatterns) {
             size_t start = 0, end;
+            std::string pattern;
             while ((end = line.find(',', start)) != std::string::npos) {
-                patterns.push_back(line.substr(start, end - start));
+                pattern = line.substr(start, end - start);
+                pattern.erase(std::remove(pattern.begin(), pattern.end(), ' '), pattern.end());
+                patterns.insert(pattern);
                 start = end + 1;
             }
-            patterns.push_back(line.substr(start));
+            pattern = line.substr(start, end - start);
+            pattern.erase(std::remove(pattern.begin(), pattern.end(), ' '), pattern.end());
+            patterns.insert(pattern);
         } else {
             desings.push_back(line);
         }
