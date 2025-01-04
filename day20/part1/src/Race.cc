@@ -67,66 +67,78 @@ int Race::getShortCutsByMinTimeSave(int minTimeSave) {
 
 ShortCutSet Race::getPathShortCuts() {
     ShortCutSet shortCuts;
-    coordsSet visited;
 
     std::cout << "FINDING SHORTCUTS";
     for(intPair coords: path) {
         std::cout << "." << std::flush;
-        visited.insert(coords);
-        exploreShortCut({coords}, shortCuts, visited);
+        exploreShortCut(coords, {coords.first, coords.second - 2}, shortCuts);
+        exploreShortCut(coords, {coords.first - 2, coords.second}, shortCuts);
+        exploreShortCut(coords, {coords.first, coords.second + 2}, shortCuts);
+        exploreShortCut(coords, {coords.first + 2, coords.second}, shortCuts);
     }
 
     // for(ShortCut s : shortCuts) {
     //     std::cout << "[(" << s.firstCoord.first << "," << s.firstCoord.second << "),(" << s.secondCoord.first << "," << s.secondCoord.second << ")]: " << s.timeDifference << std::endl;
     // }
-    //printShortCutsByTime(shortCuts);
+    // printShortCutsByTime(shortCuts);
 
     return shortCuts;
 }
 
-void Race::exploreShortCut(coordsVector shortCutCoords, ShortCutSet& shortCuts, const coordsSet& visited) {
-    coordsSet explored = visited;
-    Direction dir = RIGHT;
-    intPair coords;
-    coords = shortCutCoords.back();
-    explored.insert(coords);
-
-    // std::cout << shortCutCoords.size() << " | (" << coords.first << "," << coords.second << ") " << std::endl;
-    // std::cin.get();
-    int shortCutTime = pathTimes[shortCutCoords[0]] + (shortCutCoords.size()) - 1;
-    ShortCut shortCut = {shortCutCoords[1], shortCutCoords[2], pathTimes[coords] - shortCutTime};
-    bool foundShortCut = pathTimes.find(coords) != pathTimes.end() && 
-                        shortCutCoords.size() > 1 &&
-                        !checkIfBetterShortCut(shortCut, shortCuts) &&
-                        pathTimes[coords] > shortCutTime;
-
-    if(foundShortCut && shortCutCoords.size() >= 3 && !isWall(shortCutCoords[2])) {
-        // std::cout << "INSERT: [(" << shortCutCoords[1].first << "," << shortCutCoords[1].second << "),(" << shortCutCoords[2].first << "," << shortCutCoords[2].second << ")]: " << pathTimes[coords] - shortCutTime << std::endl;
-        // std::cin.get();
-        shortCuts.insert(shortCut);
-    }
-
-    // system("clear");
-    // printRaceWithShorcutAndVisited(shortCut, explored, shortCuts);
-
-    if (shortCutCoords.size() < 4) {
-        for(int rotation = 0; rotation < 4; rotation++) {
-            intPair nextCoords = moveCoord(coords, dir);
-            // std::cout << "EXPLORE (" << nextCoords.first << "," << nextCoords.second << ")" << std::endl;
-            // std::cin.get();
-            shortCutCoords.push_back(nextCoords);
-            exploreShortCut(shortCutCoords, shortCuts, explored);
-            shortCutCoords.pop_back();
-            // std::cout << "RETURN TO: " << shortCutCoords.size() << " | (" << coords.first << "," << coords.second << ")" << std::endl;
-            // std::cin.get();
-            rotateDirectionRight(dir, 1);
+void Race::exploreShortCut(intPair origin, intPair destiny, ShortCutSet& shortCuts) {
+    if(pathTimes.find(origin) != pathTimes.end() && pathTimes.find(destiny) != pathTimes.end()) {
+        if(pathTimes[destiny] > pathTimes[origin] + 2 && canMove(destiny)) {
+            int firstCoord = origin.first + ((destiny.first - origin.first)/2);
+            int secondCoord = origin.second + ((destiny.second - origin.second)/2);
+            intPair firstCoords = intPair({firstCoord, secondCoord});
+            shortCuts.insert(ShortCut({firstCoords, destiny, pathTimes[destiny] - pathTimes[origin] - 2}));
         }
     }
-
-    if(shortCutCoords.size() > 1) {
-        explored.erase(coords);
-    }
 }
+
+// void Race::exploreShortCut(coordsVector shortCutCoords, ShortCutSet& shortCuts, const coordsSet& visited) {
+//     coordsSet explored = visited;
+//     Direction dir = RIGHT;
+//     intPair coords;
+//     coords = shortCutCoords.back();
+//     explored.insert(coords);
+
+//     // std::cout << shortCutCoords.size() << " | (" << coords.first << "," << coords.second << ") " << std::endl;
+//     // std::cin.get();
+//     int shortCutTime = pathTimes[shortCutCoords[0]] + (shortCutCoords.size()) - 1;
+//     ShortCut shortCut = {shortCutCoords[1], shortCutCoords[2], pathTimes[coords] - shortCutTime};
+//     bool foundShortCut = pathTimes.find(coords) != pathTimes.end() && 
+//                         shortCutCoords.size() > 1 &&
+//                         !checkIfBetterShortCut(shortCut, shortCuts) &&
+//                         pathTimes[coords] > shortCutTime;
+
+//     if(foundShortCut && shortCutCoords.size() >= 3 && !isWall(shortCutCoords[2])) {
+//         // std::cout << "INSERT: [(" << shortCutCoords[1].first << "," << shortCutCoords[1].second << "),(" << shortCutCoords[2].first << "," << shortCutCoords[2].second << ")]: " << pathTimes[coords] - shortCutTime << std::endl;
+//         // std::cin.get();
+//         shortCuts.insert(shortCut);
+//     }
+
+//     // system("clear");
+//     // printRaceWithShorcutAndVisited(shortCut, explored, shortCuts);
+
+//     if (shortCutCoords.size() < 4) {
+//         for(int rotation = 0; rotation < 4; rotation++) {
+//             intPair nextCoords = moveCoord(coords, dir);
+//             // std::cout << "EXPLORE (" << nextCoords.first << "," << nextCoords.second << ")" << std::endl;
+//             // std::cin.get();
+//             shortCutCoords.push_back(nextCoords);
+//             exploreShortCut(shortCutCoords, shortCuts, explored);
+//             shortCutCoords.pop_back();
+//             // std::cout << "RETURN TO: " << shortCutCoords.size() << " | (" << coords.first << "," << coords.second << ")" << std::endl;
+//             // std::cin.get();
+//             rotateDirectionRight(dir, 1);
+//         }
+//     }
+
+//     if(shortCutCoords.size() > 1) {
+//         explored.erase(coords);
+//     }
+// }
 
 bool Race::checkIfBetterShortCut(ShortCut ShortCutCandidate, const ShortCutSet& shortCuts) {
     for(ShortCut shortCuts : shortCuts) {
@@ -142,6 +154,10 @@ bool Race::checkIfBetterShortCut(ShortCut ShortCutCandidate, const ShortCutSet& 
 bool Race::canMove(intPair coords, Direction dir) {
     intPair nextCoords = moveCoord(coords, dir);
     return !outOfBounds(nextCoords) && !isWall(nextCoords);
+}
+
+bool Race::canMove(intPair coords) {
+    return !outOfBounds(coords) && !isWall(coords);
 }
 
 intPair Race::moveCoord(intPair coords, Direction d) {

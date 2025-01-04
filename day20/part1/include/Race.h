@@ -41,10 +41,11 @@ class Race {
 
         intPair findPathStart();
         void savePathTimes();
-        void exploreShortCut(coordsVector, ShortCutSet&, const coordsSet&);
+        void exploreShortCut(intPair, intPair, ShortCutSet&);
 
         bool checkIfBetterShortCut(ShortCut, const ShortCutSet&);
         bool canMove(intPair, Direction);
+        bool canMove(intPair);
         bool outOfBounds(intPair);
         bool isWall(intPair);
         intPair moveCoord(intPair, Direction);
