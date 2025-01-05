@@ -11,7 +11,7 @@ DEPENDS = $(patsubst $(SRC_DIR)/%.cc, $(BUILD_DIR)/%.d, $(SOURCES))
 
 # Compiler and Flags
 CXX = g++
-CXXFLAGS = -std=c++14 -g -Wall -I$(INCLUDE_DIR)
+CXXFLAGS = -std=c++17 -g -Wall -I$(INCLUDE_DIR)
 
 # Build Rules
 all: $(EXECUTABLE)

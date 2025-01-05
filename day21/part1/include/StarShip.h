@@ -1,25 +1,23 @@
 #pragma once
 
 #include <vector>
-#include <set>
-#include <map>
+#include <string>
 
-enum Direction {
-    UP = 0,
-    RIGHT = 1,
-    DOWN = 2,
-    LEFT = 3
-};
-
-using intPair = std::pair<int, int>;
+#include "Constants.h"
+#include "KeyPad.h"
 
 class StarShip {
     private:
         std::vector<std::string> codes;
+        std::vector<KeyPad> keyPads;
 
+        std::string getInstructions(char, size_t);
+        int codeToInt(std::string);
+        void resetKeyPads();
     public:
         StarShip(std::vector<std::string>);
         ~StarShip();
 
+        long getComplexitySum();
         void printCodes();
 };
