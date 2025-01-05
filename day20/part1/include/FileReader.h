@@ -1,12 +1,12 @@
-#include <sstream>
+#pragma once
+
 #include <fstream>
-#include <algorithm>
 
 #include "Race.h"
 
 class fileReader {
 private:
-    std::ifstream file;
+    std::ifstream file_;
 
 public:
     fileReader(std::string);

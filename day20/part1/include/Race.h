@@ -1,15 +1,20 @@
-#include <iostream>
+#pragma once
+
 #include <vector>
 #include <set>
 #include <map>
-#include <queue>
-#include <limits>
 
-typedef std::pair<int,int> intPair;
-typedef std::pair<intPair,intPair> coordsPair;
-typedef std::pair<bool,bool> doubleCheck;
-typedef std::vector<intPair> coordsVector;
-typedef std::set<intPair> coordsSet;
+struct ShortCut;
+enum Direction {
+    UP = 0,
+    RIGHT = 1,
+    DOWN = 2,
+    LEFT = 3
+};
+
+using intPair = std::pair<int, int>;
+using coordsSet = std::set<intPair>;
+using ShortCutSet = std::set<ShortCut>;
 
 struct ShortCut {
     intPair firstCoord;
@@ -22,41 +27,26 @@ struct ShortCut {
     }
 };
 
-typedef std::set<ShortCut> ShortCutSet;
-
-enum Direction {
-    UP = 0,
-    RIGHT = 1,
-    DOWN = 2,
-    LEFT = 3
-};
-
 class Race {
     private:
         std::vector<std::string> raceMap;
-        std::vector<intPair> path;
-        std::map<intPair, int> pathTimes;
-        intPair pathStart;
-        long shortCutLessScore;
+        std::map<intPair, int> path;
 
         intPair findPathStart();
-        void savePathTimes();
+        void savePathData(intPair);
         void exploreShortCut(intPair, intPair, ShortCutSet&);
 
-        bool checkIfBetterShortCut(ShortCut, const ShortCutSet&);
+        intPair moveCoord(intPair, Direction);
         bool canMove(intPair, Direction);
-        bool canMove(intPair);
+        bool canMoveTo(intPair);
         bool outOfBounds(intPair);
         bool isWall(intPair);
-        intPair moveCoord(intPair, Direction);
-        void rotateDirectionRight(Direction&, int);
     public:
         Race(std::vector<std::string>);
         ~Race();
 
         ShortCutSet getPathShortCuts();
-        int getShortCutsByMinTimeSave(int);
-        void printShortCutsByTime(const ShortCutSet&);
-        void printRaceWithShorcutAndVisited(const ShortCut&, const std::set<intPair>&, const ShortCutSet&);
+        int getShortCutsCountByMinTimeSaved(int);
+        void printShortCutsByTime();
         void printMap();
 };
