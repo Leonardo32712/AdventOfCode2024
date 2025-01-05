@@ -4,6 +4,8 @@
 #include <set>
 #include <map>
 
+const unsigned int MAX_RADIUS = 20;
+
 struct ShortCut;
 enum Direction {
     UP = 0,

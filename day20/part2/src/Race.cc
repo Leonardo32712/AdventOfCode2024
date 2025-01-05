@@ -67,9 +67,7 @@ ShortCutSet Race::getPathShortCuts() {
 
     for(std::pair<intPair,int> pathCell: path) {
         intPair coords = pathCell.first;
-        for(int radius = 2; radius <= 20; radius++) {
-            exploreRegion(coords, radius, shortCuts);
-        }
+        exploreRegion(coords, MAX_RADIUS, shortCuts);
     }
 
     return shortCuts;
@@ -77,7 +75,8 @@ ShortCutSet Race::getPathShortCuts() {
 
 void Race::exploreRegion(intPair origin, int radius, ShortCutSet& shortCuts) {
     for(int i = -radius; i <= radius; i++) {
-        for(int j = abs(i) - radius; j <= radius - abs(i); j++) {
+        const int absI = abs(i);
+        for(int j = absI - radius; j <= radius - absI; j++) {
             intPair destiny = intPair({origin.first + i, origin.second + j});
             exploreShortCut(origin, destiny, shortCuts);
         }
@@ -85,13 +84,12 @@ void Race::exploreRegion(intPair origin, int radius, ShortCutSet& shortCuts) {
 }
 
 void Race::exploreShortCut(intPair origin, intPair destiny, ShortCutSet& shortCuts) {
-    auto originTimeIt = path.find(origin);
     auto destinyTimeIt = path.find(destiny);
 
-    if (originTimeIt == path.end() || destinyTimeIt == path.end()) { return; }
+    if (destinyTimeIt == path.end()) { return; }
 
-    long originTime = originTimeIt->second;
-    long destinyTime = destinyTimeIt->second;
+    long originTime = path[origin];
+    long destinyTime = path[destiny];
 
     int distance = abs(origin.first - destiny.first) + abs(origin.second - destiny.second);
 
